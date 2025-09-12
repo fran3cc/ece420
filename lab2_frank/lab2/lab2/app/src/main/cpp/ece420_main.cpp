@@ -29,6 +29,8 @@ void ece420ProcessFrame(sample_buf *dataBuf) {
         bufferIn[i] = sample;
     }
 
+
+
     // ********************* END YOUR CODE HERE ********************* //
 
     // Loop code provided as a suggestion. This loop simulates sample-by-sample processing.
@@ -49,6 +51,8 @@ void ece420ProcessFrame(sample_buf *dataBuf) {
         dataBuf->buf_[2*i] = (uint8_t)(bufferOut[i] & 0xFF);        // Low byte
         dataBuf->buf_[2*i+1] = (uint8_t)((bufferOut[i] >> 8) & 0xFF); // High byte
     }
+
+
 
 
     // ********************* END YOUR CODE HERE ********************* //
@@ -177,8 +181,8 @@ static const float myfilter[N_TAPS] = {
 //}
 
 
-int16_t circBuf[N_TAPS] = {0};
-int circIdx = 0;
+int16_t      circBuf[N_TAPS] = {0};
+int          circIdx = 0;
 
 int16_t firFilter(int16_t sample) {
 
@@ -198,7 +202,7 @@ int16_t firFilter(int16_t sample) {
     // ++circ index (modulo)
     circIdx = (int16_t)((((int)circIdx) + 1) % N_TAPS);
 
-    
+
     if (acc >  32767.0f) acc =  32767.0f;
     if (acc < -32768.0f) acc = -32768.0f;
     output = (int16_t)acc;
