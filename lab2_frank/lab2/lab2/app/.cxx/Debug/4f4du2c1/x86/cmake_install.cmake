@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/llark/OneDrive/Documents/GitHub/ece420code/structure_labs/lab_files/fromExisting_files/lab2/app/src/main/cpp
+# Install script for directory: /Users/sidabid09/ece420/lab2_frank/lab2/lab2/app/src/main/cpp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Project")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,7 +39,7 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/llark/AppData/Local/Android/Sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-objdump.exe")
+  set(CMAKE_OBJDUMP "/Users/sidabid09/Library/Android/sdk/ndk/26.1.10909125/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-objdump")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/llark/OneDrive/Documents/GitHub/ece420code/structure_labs/lab_files/fromExisting_files/lab2/app/.cxx/Debug/4f4du2c1/x86/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/sidabid09/ece420/lab2_frank/lab2/lab2/app/.cxx/Debug/4f4du2c1/x86/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,0 +1,3 @@
+/Users/sidabid09/ece420/lab2_frank/lab2/lab2/app/.cxx/Debug/4f4du2c1/x86_64/CMakeFiles/echo.dir
+/Users/sidabid09/ece420/lab2_frank/lab2/lab2/app/.cxx/Debug/4f4du2c1/x86_64/CMakeFiles/edit_cache.dir
+/Users/sidabid09/ece420/lab2_frank/lab2/lab2/app/.cxx/Debug/4f4du2c1/x86_64/CMakeFiles/rebuild_cache.dir
