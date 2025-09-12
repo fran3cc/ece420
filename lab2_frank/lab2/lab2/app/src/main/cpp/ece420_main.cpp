@@ -177,8 +177,8 @@ static const float myfilter[N_TAPS] = {
 //}
 
 
-int16_t      circBuf[N_TAPS] = {0};
-int          circIdx = 0;
+int16_t circBuf[N_TAPS] = {0};
+int circIdx = 0;
 
 int16_t firFilter(int16_t sample) {
 
