@@ -96,89 +96,19 @@ static const float myfilter[N_TAPS] = {
     0.0007161076f
 };
 
-// Circular Buffer
-
-//int16_t circBuf[N_TAPS] = {};
-//int16_t circIdx = 0;
-
-//
-//// FirFilter Function
+// FirFilter Function
 //int16_t firFilter(int16_t sample) {
-//    // This function simulates sample-by-sample processing. Here you will
-//    // implement an FIR filter such as:
-//    //
-//    // y[n] = a x[n] + b x[n-1] + c x[n-2] + ...
-//    //
-//    // You will maintain a circular buffer to store your prior samples
-//    // x[n-1], x[n-2], ..., x[n-k]. Suggested initializations circBuf
-//    // and circBufIdx are given.
-//    //
-//    // Input 'sample' is the current sample x[n].
-//       // ******************** START YOUR CODE HERE ******************** //
-//    float output = 0.0f;  // Use double to prevent overflow
+// This function simulates sample-by-sample processing. Here you will
+// implement an FIR filter such as:
 //
-//    // PART 5 - FIR FILTER IMPLEMENTATION
-//    // Store current sample in circular buffer
-//    circBuf[circBufIdx] = sample;
-//    int idx = circBufIdx;
+// y[n] = a x[n] + b x[n-1] + c x[n-2] + ...
 //
-//    // Apply FIR filter: y[n] = sum(h[k] * x[n-k])
-//    for (int i = 0; i < N_TAPS; i++) {
-//        // Calculate circular buffer index for x[n-i]
-////        int bufIdx = (circBufIdx - i + N_TAPS) % N_TAPS;
-////        // Accumulate filter output using double precision
-////        output += myfilter[i] * (double)circBuf[bufIdx];
-//        output += myfilter[i] * (float)circBuf[idx];
-//        if (--idx < 0) idx = N_TAPS - 1; //decrement
+// You will maintain a circular buffer to store your prior samples
+// x[n-1], x[n-2], ..., x[n-k]. Suggested initializations circBuf
+// and circBufIdx are given.
 //
-//    }
-//
-//    // Update circular buffer index for next sample
-//    //circBufIdx = (circBufIdx + 1) % N_TAPS;
-//    if (++circBufIdx >= N_TAPS) circBufIdx = 0; //wrap manually, simpler than %
-//
-//    // Clamp output to int16_t range to prevent overflow
-//    if (output > 32767.0) output = 32767.0;
-//    if (output < -32768.0) output = -32768.0;
-//
-//    // PART 6 - IIR FILTER (EXTRA CREDIT)
-//    // Uncomment and modify the following section for IIR implementation:
-//    /*
-//    // Additional static variables needed for IIR (add these at top of file):
-//    // #define IIR_ORDER 2
-//    // static double b_coeffs[IIR_ORDER+1] = {0.25, 0.5, 0.25};  // Feedforward coefficients
-//    // static double a_coeffs[IIR_ORDER+1] = {1.0, -0.5, 0.25};  // Feedback coefficients (a[0] = 1.0)
-//    // static int16_t x_history[IIR_ORDER+1] = {0}; // Input history
-//    // static int16_t y_history[IIR_ORDER+1] = {0}; // Output history
-//    // static int iir_idx = 0;
-//
-//    // Store current input
-//    x_history[iir_idx] = sample;
-//
-//    // Calculate IIR output
-//    double iir_output = 0.0;
-//
-//    // Feedforward part: sum(b[k] * x[n-k])
-//    for(int i = 0; i <= IIR_ORDER; i++) {
-//        int idx = (iir_idx - i + IIR_ORDER + 1) % (IIR_ORDER + 1);
-//        iir_output += b_coeffs[i] * x_history[idx];
-//    }
-//
-//    // Feedback part: sum(a[k] * y[n-k]) for k > 0
-//    for(int i = 1; i <= IIR_ORDER; i++) {
-//        int idx = (iir_idx - i + IIR_ORDER + 1) % (IIR_ORDER + 1);
-//        iir_output -= a_coeffs[i] * y_history[idx];
-//    }
-//
-//    // Store output and update index
-//    output = iir_output;
-//    y_history[iir_idx] = (int16_t)output;
-//    iir_idx = (iir_idx + 1) % (IIR_ORDER + 1);
-//    */
-//
-//    // ********************* END YOUR CODE HERE ********************* //
-//    return (int16_t)output;
-//}
+// Input 'sample' is the current sample x[n].
+// ******************** START YOUR CODE HERE ******************** //
 
 
 int16_t      circBuf[N_TAPS] = {0};
@@ -209,3 +139,6 @@ int16_t firFilter(int16_t sample) {
 
     return output;
 }
+
+
+// ********************* END YOUR CODE HERE ********************* //
