@@ -1,0 +1,24 @@
+# ninja log v5
+23	176	7806171250472691	CMakeFiles/echo.dir/kiss_fft/kiss_fft.c.o	46eb50c7c4b24bba
+19	555	7806171254247590	CMakeFiles/echo.dir/ece420_lib.cpp.o	dd5ba699ade3a67b
+4	570	7806171254407626	CMakeFiles/echo.dir/audio_common.cpp.o	f3510c00a86e5c0b
+28	594	7806171254604824	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+10	602	7806171254704810	CMakeFiles/echo.dir/audio_recorder.cpp.o	9ef936459597ab12
+0	604	7806171254704810	CMakeFiles/echo.dir/audio_main.cpp.o	4bd732e4e10b84d4
+7	605	7806171254714819	CMakeFiles/echo.dir/audio_player.cpp.o	dfeddbc38fda4a83
+16	636	7806171255089035	CMakeFiles/echo.dir/debug_utils.cpp.o	d221743acc9340db
+636	754	7806171256264099	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
+6	510	7806176179574511	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+510	635	7806176180844192	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
+3	389	7806178287387251	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+389	465	7806178288182252	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
+4	401	7806179714984120	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+402	478	7806179715774040	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
+3	379	7806180579696361	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+380	455	7806180580474637	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
+3	370	7806181427505918	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+370	438	7806181428213033	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
+3	404	7806182884456597	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+405	482	7806182885269870	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
+3	379	7806183021112482	CMakeFiles/echo.dir/ece420_main.cpp.o	68cdd9c30ab1beff
+379	451	7806183021862904	C:/Users/csiha/Downloads/ece420/lab4_ece420/lab4/app/build/intermediates/cxx/Debug/4f4du2c1/obj/arm64-v8a/libecho.so	1b757ad603cdeb97
