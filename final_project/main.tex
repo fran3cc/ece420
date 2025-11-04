@@ -1,0 +1,134 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\title{\textbf{Prototype Proposal: Non-Contact Pulse and Respiration Detection via Eulerian Video Magnification}}
+\author{Frank Chen, David Zheng \\ NetIDs: sihan6, davidz7}
+\date{October 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The goal of this project is to design a prototype that estimates a person’s pulse and respiration rate from ordinary video without physical contact sensors. 
+This work is inspired by Wu \textit{et al.}, ``Eulerian Video Magnification for Revealing Subtle Changes in the World,'' \textit{ACM TOG}, 31(4), 2012.
+Their method amplifies imperceptible variations in pixel intensity to reveal hidden physiological signals such as skin color modulation from blood flow or chest motion due to breathing.
+
+For the ECE 420 prototype, I will reimplement the core signal-processing algorithm in Python, focusing on temporal filtering, frequency-domain analysis, and validation against true results.
+The final goal is a fully functional pipeline on the Android tablet that extracts the periodic components of heartbeats and respiration from video data using digital filters and spectral estimation.
+
+\section{Overview of Algorithm}
+
+\subsection{Principle of Eulerian Video Magnification}
+
+Given a video sequence \(I(x,y,t)\), each pixel’s intensity changes slightly over time.
+EVM decomposes the video spatially (e.g., Gaussian or Laplacian pyramid) and applies temporal band-pass filtering to amplify small temporal variations.
+The output frame sequence is expressed as:
+\begin{equation}
+I'(x,y,t) = I(x,y,t) + \alpha \, (I(x,y,t) * h(t)),
+\end{equation}
+where \(h(t)\) is the temporal band-pass filter isolating the desired frequency band, and \(\alpha\) is the amplification factor.
+This allows visualization of subtle motion or color variations corresponding to physiological rhythms.
+
+\subsection{Signal Extraction Pipeline}
+
+The same temporal filtering concept can be used to extract physiological signals without visually amplifying the video.
+Two major signals are analyzed: \textbf{pulse (heart rate)} and \textbf{respiration (breathing rate)}.
+
+\subsubsection*{Step 1 – ROI Selection}
+A face detection method (e.g., OpenCV Haar Cascade or MediaPipe) identifies regions of interest.
+For pulse, the ROI is the forehead or cheeks; for respiration, the chest region.
+The pixel intensities are averaged within the ROI to produce a single temporal signal \(G(t)\).
+
+\subsubsection*{Step 2 – Channel Selection}
+The green channel is preferred for pulse detection because hemoglobin reflects green light most strongly, yielding the highest signal-to-noise ratio.
+For respiration, either grayscale or overall luminance is sufficient.
+
+\subsubsection*{Step 3 – Detrending}
+To remove slow variations due to lighting or head motion, a moving-average filter is subtracted:
+\[
+G'(t) = G(t) - \text{MA}(G(t)).
+\]
+
+\subsubsection*{Step 4 – Band-Pass Filtering}
+A temporal band-pass filter isolates the physiological frequency range. This frequency range will be changed depending on the application of the video. 
+
+For pulse:
+\[
+0.8~\text{Hz} < f < 1.5~\text{Hz} \quad (\text{$\approx$ 48–90 BPM}),
+\]
+and for respiration:
+\[
+0.2~\text{Hz} < f < 0.5~\text{Hz} \quad (\text{$\approx$ 12–30 breaths/min}).
+\]
+The filtered signal is \(G_f(t) = G'(t) * h(t)\).
+
+
+\subsubsection*{Step 5 – Frequency Analysis}
+The dominant frequency is found via Fourier transform:
+\[
+S(f) = |\mathcal{F}\{G_f(t)\}|.
+\]
+The peak frequency \(f_{\text{peak}}\) corresponds to:
+\[
+\text{Heart Rate (BPM)} = 60 \times f_{\text{peak}}.
+\]
+
+\subsubsection*{Step 6 – Visualization and Comparison}
+The reconstructed signal can be plotted over time or mapped back into the video frames to show subtle skin color pulsation (for pulse) or chest expansion (for respiration).
+Though the two signals are not strictly synchronized, respiration can modulate the instantaneous heart rate (respiratory sinus arrhythmia), producing a mild interaction visible in the frequency spectrum. Detecting the respiration rate corresponds more to motion magnification described in the paper, while pulse detection utilizes color amplification for determining the pulse of the video.  
+
+\subsection{Algorithm Summary}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Signal Type} & \textbf{Freq. Range (Hz)} & \textbf{Main Source} & \textbf{Feature Used} \\
+\hline
+Pulse & 0.4 - 4 & Skin color variation & Green-channel intensity \\
+Respiration & 0.2–0.5 & Chest movement & Luminance/position shift \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Plan for Testing and Validation}
+
+\subsection{Testing Strategy}
+
+\begin{itemize}
+  \item \textbf{Data Collection:} Record short 10–20 s clips of 5–10 subjects under consistent lighting.  
+  A smartwatch or fingertip pulse oximeter provides true heart and respiration rates.
+  \item \textbf{Filter Verification:} Plot temporal FFTs before/after filtering to ensure correct band isolation.
+  \item \textbf{Accuracy Evaluation:} Compare estimated pulse and respiration rates to ground truth using mean-absolute-error (MAE) and correlation \(r\).
+  \item \textbf{Qualitative Validation:} Present side-by-side videos (“original vs magnified”) and corresponding signal traces.
+\end{itemize}
+
+\subsection{Expected Results}
+
+Under stable lighting and minimal head motion, the extracted pulse signal should yield heart-rate estimates within ± 5 BPM and respiration within ± 2 breaths/min.
+The magnified video should visibly emphasize rhythmic color or motion oscillations. 
+
+\subsection{Validation Metrics}
+
+\[
+\text{MAE} = \frac{1}{N}\sum_{i=1}^{N} |\hat{r_i}-r_i|, 
+\quad
+r = \text{corr}(\hat{r}, r).
+\]
+
+\section{Future Work}
+
+The final project will extend this prototype to real-time camera streams, adaptive frequency selection, and visual dashboards for continuous monitoring.
+Potential applications include stress detection, health tracking, or artistic visualization of physiological rhythms.
+
+\section{References}
+
+\begin{itemize}
+  \item H.-Y. Wu, M. Rubinstein, E. Shih, J. Guttag, F. Durand, and W. T. Freeman, ``Eulerian Video Magnification for Revealing Subtle Changes in the World,'' \textit{ACM Trans. Graph. 31}(4), 2012.
+\end{itemize}
+
+\end{document}

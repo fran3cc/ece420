@@ -322,7 +322,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
             boolean ok = myTracker.update(mGray, myROI);
 
             if (!ok) {
-                Imgproc.putText(
+                Imgproc.putTe   1xt(
                         mRgba,
                         "Tracking failure occured!",
                         new Point(30, 40),
