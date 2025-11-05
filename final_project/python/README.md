@@ -1,203 +1,88 @@
-# ECE 420 Final Project - Physiological Signal Detection with Visual Magnification
+# Eulerian Video Magnification (EVM)
 
-This project implements real-time physiological signal detection from video using computer vision techniques, enhanced with **Eulerian Video Magnification (EVM)** for visual amplification of physiological signals.
+Simple Python CLI that matches the MATLAB Gaussian+Ideal pipeline and prints pulse BPM in the terminal from two methods:
+- Color-based pulse (green channel, measured on the EVM output video)
+- Motion-based pulse (head motion via optical flow + PCA on original video)
 
-## 🎯 Key Features
+The output video stays the same style as the MATLAB results.
 
-- **Pulse Detection**: Extract heart rate from facial video using photoplethysmography (PPG)
-- **Respiration Detection**: Monitor breathing rate from chest movement analysis
-- **🆕 Visual Magnification**: Real-time Eulerian Video Magnification to make physiological signals visible
-- **🆕 Fast Startup**: Reduced "warming up" time - detection starts in ~3 seconds
-- **Live Camera Demo**: Real-time processing with webcam input and interactive controls
-- **Video Processing**: Batch analysis of recorded videos
+## Quick Start
 
-## 🚀 Quick Start
+Process a video using a predefined config:
 
-1. Install dependencies:
 ```bash
-pip install -r requirements.txt
+python main.py --video final_project/python/samples/baby2.mp4 --config baby2
 ```
 
-2. Run the enhanced live camera demo:
+Process a custom video with manual parameters:
+
 ```bash
-python scripts/live_camera.py
+python main.py \
+  --video /path/to/input.mp4 \
+  --alpha 50 \
+  --levels 4 \
+  --fl 0.9 \
+  --fh 1.3 \
+  --chrom-attenuation 1.0
 ```
 
-3. Or use the interactive demo launcher:
-```bash
-python demo_live_magnification.py
-```
+Output:
+- Saves `/<path>/<name>_evm.mp4`
+- Prints two lines in terminal:
+  - `Color BPM (EVM video): <value>`
+  - `Motion BPM (optical flow): <value>`
 
-## 🎮 Interactive Controls
+## Picking Parameters (student-style guide)
 
-During live camera operation:
-- **'q'**: Quit the application
-- **'s'**: Switch between pulse and respiration detection modes
-- **'m'**: Toggle visual magnification on/off
+Frequency band is the most important. It’s in Hz, BPM = 60 × Hz.
 
-## 🔧 Major Improvements
+- Baby pulse (high HR 120–180 BPM):
+  - Use `--fl 2.0 --fh 3.0` (Hz)
+  - Example: `--alpha 150 --levels 6 --fl 140/60 --fh 160/60` (matches baby2 MATLAB)
+- Adult face pulse (normal HR 50–100 BPM):
+  - Use `--fl 0.8 --fh 1.7` (Hz)
+- Motion amplification (not pulse, e.g., vibrations):
+  - Use higher band like `--fl 3 --fh 10` (Hz)
 
-### ✅ Fixed "Warming Up" Issue
-- **Before**: Required 60+ frames and long initialization
-- **After**: Starts detecting in ~3 seconds with adaptive parameters
-- Reduced minimum frame requirements from 4×FPS to 2×FPS
-- Adaptive detrending window based on available data
+Other knobs:
+- `--alpha` (gain): start at 50. If color changes are faint, try 80–150. If shadows/noise appear, lower it.
+- `--levels` (Gaussian downsample levels): usually 4–6. Higher levels blur more before magnification.
+- `--chrom-attenuation`: 1.0 keeps chroma neutral. 1.5–2.5 can boost color changes.
 
-### ✅ Added Visual Magnification
-- **Real-time Eulerian Video Magnification (EVM)**
-- Makes subtle physiological changes visible to the naked eye
-- Gaussian pyramid decomposition with temporal bandpass filtering
-- Adjustable magnification factor (default: 30x)
-- Toggle on/off during live operation
+Tips:
+- If color BPM looks wrong, check the band. Adult videos need ~0.8–1.7 Hz; babies need ~2.0–3.0 Hz.
+- If motion BPM reads breathing instead of pulse, the band is too low. Raise to baby pulse range for infants.
+- Face-crops help. You can crop first with ffmpeg:
+  ```bash
+  ffmpeg -i input.mp4 -vf "crop=W:H:X:Y" -c:a copy input_facecrop.mp4
+  ```
 
-### ✅ Enhanced User Experience
-- Better error messages and status feedback
-- Improved FPS calculation and display
-- More responsive parameter updates
-- Cleaner visual interface with magnification status
+## Usage Examples
 
-## 📊 Technical Details
+Predefined configs (auto parameters):
+- Baby (Gaussian+Ideal):
+  ```bash
+  python main.py --video final_project/python/samples/baby2.mp4 --config baby2
+  ```
+- Adult face (Gaussian+Ideal):
+  ```bash
+  python main.py --video final_project/python/samples/face.mp4 --config face
+  ```
 
-### Signal Extraction
-- **Pulse**: Green channel analysis from facial ROI (photoplethysmography)
-- **Respiration**: Luma (brightness) analysis from chest ROI
+Manual tuning:
+- Adult face (normal HR):
+  ```bash
+  python main.py --video /path/to/face.mp4 --alpha 50 --levels 4 --fl 0.9 --fh 1.3 --chrom-attenuation 1.0
+  ```
+- Baby (high HR):
+  ```bash
+  python main.py --video /path/to/baby.mp4 --alpha 150 --levels 6 --fl 2.2 --fh 2.6 --chrom-attenuation 1.0
+  ```
 
-### Visual Magnification Pipeline
-1. **Gaussian Pyramid**: Multi-scale image decomposition
-2. **Temporal Filtering**: Bandpass filtering in frequency domain
-3. **Amplification**: Magnify filtered signals by configurable factor
-4. **Reconstruction**: Rebuild image with amplified physiological signals
+## What’s inside
 
-### Signal Processing Pipeline
-1. **ROI Detection**: Automatic face/chest region detection
-2. **Signal Extraction**: Channel-specific signal extraction
-3. **Detrending**: Adaptive moving average detrending
-4. **Filtering**: Butterworth bandpass filtering for target frequency ranges
-5. **Frequency Analysis**: FFT-based spectrum analysis with peak detection
+- Gaussian pyramid + ideal temporal bandpass (matches MATLAB `amplify_spatial_Gdown_temporal_ideal.m`)
+- NTSC color space with optional chroma amplification
+- Two BPM results printed in terminal: color (from magnified video) and motion (optical flow)
 
-### Frequency Bands
-- **Pulse**: 0.8-1.5 Hz (48-90 BPM) - optimized for quick detection
-- **Respiration**: 0.2-0.5 Hz (12-30 breaths/min)
-
-## 🚀 Usage Examples
-
-### Enhanced Live Camera Demo
-```bash
-# Basic usage with magnification enabled (default)
-python scripts/live_camera.py
-
-# Pulse mode with high magnification
-python scripts/live_camera.py --mode pulse --mag-factor 35
-
-# Respiration mode
-python scripts/live_camera.py --mode respiration
-
-# Disable magnification
-python scripts/live_camera.py --magnify false
-
-# Custom parameters with fast updates
-python scripts/live_camera.py --window-sec 10 --update-interval 0.2
-```
-
-### Video Processing
-```bash
-# Process video with default settings
-python scripts/process_video.py video.mp4
-
-# Specify output directory and mode
-python scripts/process_video.py video.mp4 --output results/ --mode respiration
-
-# Custom frequency band
-python scripts/process_video.py video.mp4 --band 0.5 2.0
-```
-
-## 📁 Project Structure
-
-```
-python/
-├── physio/                    # Core processing modules
-│   ├── config.py             # Configuration parameters
-│   ├── filters.py            # Signal filtering functions
-│   ├── io.py                # Video I/O utilities
-│   ├── pipelines.py         # Processing pipelines
-│   ├── roi.py               # Region of interest detection
-│   ├── spectrum.py          # Frequency analysis
-│   ├── types.py             # Type definitions
-│   └── viz.py               # Visualization utilities
-├── scripts/                  # Main application scripts
-│   ├── live_camera.py       # 🆕 Enhanced live camera with EVM
-│   └── process_video.py     # Video processing script
-├── demo_live_magnification.py # 🆕 Interactive demo launcher
-└── test_physio.py           # Unit tests
-```
-
-## ⚙️ Configuration
-
-Key parameters can be adjusted in `physio/config.py` or via command line:
-
-- `PULSE_BAND_HZ`: Frequency range for pulse detection (0.8-1.5 Hz)
-- `RESP_BAND_HZ`: Frequency range for respiration detection (0.2-0.5 Hz)
-- `LIVE_WINDOW_SEC`: Rolling window size for live processing (15s)
-- `--mag-factor`: Visual magnification factor (default: 30)
-- `--update-interval`: Rate update frequency (default: 0.2s)
-
-## 🔬 Algorithm Details
-
-### Eulerian Video Magnification
-The EVM implementation uses:
-- **Spatial Decomposition**: 4-level Gaussian pyramid
-- **Temporal Filtering**: Simple bandpass filter using moving averages
-- **Magnification**: Linear amplification of filtered signals
-- **Reconstruction**: Pyramid reconstruction with clipping to valid pixel ranges
-
-### Adaptive Processing
-- **Dynamic Window Sizing**: Adjusts detrending window based on available data
-- **Minimum Frame Requirements**: Reduced for faster startup
-- **Error Handling**: Graceful degradation with user-friendly messages
-
-## 📋 Requirements
-
-- Python 3.7+
-- OpenCV (cv2) >= 4.5.0
-- NumPy >= 1.21.0
-- SciPy >= 1.7.0 (with fallback implementations)
-- Matplotlib >= 3.5.0
-
-## 🧪 Testing
-
-Run the test suite:
-```bash
-python test_physio.py
-```
-
-## 💡 Usage Tips
-
-### For Best Results:
-- **Lighting**: Ensure good, even lighting on face/chest
-- **Positioning**: Keep face clearly visible for pulse detection
-- **Stability**: Minimize camera movement for better magnification
-- **Distance**: Position 2-3 feet from camera for optimal ROI detection
-
-### Troubleshooting:
-- If magnification appears noisy, reduce `--mag-factor`
-- For faster detection, decrease `--update-interval`
-- If detection is unstable, increase `--window-sec`
-
-## 🎬 Demo Video
-
-The enhanced live camera demo showcases:
-1. **Real-time rate detection** with numerical display
-2. **Visual magnification** showing amplified physiological signals
-3. **Interactive mode switching** between pulse and respiration
-4. **Magnification toggle** to compare original vs. amplified video
-
-## 📝 Notes
-
-- Visual magnification may take 10-15 frames to stabilize
-- NumPy 2.x compatibility warnings are normal and don't affect functionality
-- Press 'm' during live demo to see the dramatic difference magnification makes
-- The system works best with subtle movements - avoid excessive motion
-
-## License
-
-This project is for educational and research purposes.
+Predefined configs live in `physio/config.py`. Only Gaussian+Ideal is implemented in Python (Laplacian variants are MATLAB-only).
